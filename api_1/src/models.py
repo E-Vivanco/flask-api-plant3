@@ -4,14 +4,14 @@ db= SQLAlchemy()
 class User(db.Model):
     __tablaname__='users'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-    lastname = db.Column(db.String(100), unique=True, nullable=False)
+    name = db.Column(db.String(100), unique=False, nullable=False)
+    lastname = db.Column(db.String(100), unique=False, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     isActive = db.Column(db.Boolean(), unique=False, nullable=False)
 
-    def __repr__(self):
-        return '<User %r>' % self.email
+    #def __repr__(self):
+    #    return '<User %r>' % self.email
 
 
     def serialize(self):

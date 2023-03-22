@@ -23,6 +23,7 @@ Migrate = Migrate(app,db) # db init, db migrate, db upgrade
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 #setup_admin(app)
 
+#ruta por default
 @app.route("/")
 def home():
     return render_template('index.html')
@@ -37,8 +38,8 @@ def get_users():
 
     return jsonify(users), 200
 
-@app.route('/api/users', methods=['POST'])
-def create_user():
+@app.route('/api/createUsers', methods=['POST'])
+def createuser():
     # INSERT INTO users() VALUES ()
 
     datos = request.get_json()
@@ -53,7 +54,7 @@ def create_user():
 
     return jsonify(user.serialize()), 201
 
-@app.route('/api/users/<int:id>', methods=['PATCH'])
+@app.route('/api/updateUsers/<int:id>', methods=['PATCH'])
 def update_user(id):
     # UPDATE user SET name="", lastname="" email="", password="" WHERE id = ?
     
@@ -74,7 +75,7 @@ def update_user(id):
 
     return jsonify(user.serialize()), 202
 
-@app.route('/api/users/<int:id>', methods=['DELETE'])
+@app.route('/api/deletUsers/<int:id>', methods=['DELETE'])
 def delete_user(id):
     # SELECT * FROM users WHERE id = ?
     user = User.query.get(id)
