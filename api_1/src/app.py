@@ -93,45 +93,43 @@ def almacenaPersonaje():
     url ='https://www.swapi.tech/api/people'
 
     datos = requests.get(url)
-    #lista_people = list()
-    print({"soy data"},datos.status_code)
-    #"print("2")
-
+    personajes = datos.json()
+    #print({"soy data"},datos.status_code)
+    #print(personajes['results'])
+   
     if datos.status_code == 200:
-        content= datos.content
-       # print(content)
-        file = open('people.json','wb')
-        file.write(content)
-        file.close()
-        #print(content)
+        print("Acceso correcto")
     else:
-        print("falla en requests")
-    
-    return("Almacenada api de personajes")  
-    
-
-@app.route('/api/postCharacter', methods=["POST"])  
-def postCharacter():
-    print("1")   
-    url='./people.json'
-    with open(url) as file:
-     data = json.load(file)
-     lista_person=list()
-     print({"soy data"},data["results"])
-     for personaje in data["results"]:
+        print("Acceso con problemas")
+  
+    for personaje in personajes["results"]:
 
         character = Character()
         character.name = personaje['name']
         character.url = personaje['url']
         character.uid = personaje['uid']
-        #lista_person.append(character)
         character.save()
-        #db.session.add(lista_person)
-        #db.session.commit()
+        
         characters = Character.query.all()
-        characters=list(map(lambda character: character.serialize(), characters))
-        file.close()
+        characters= list(map(lambda character: character.serialize(), characters))
+  
     return jsonify(characters), 200
+    
+
+@app.route('/api/postCharacter', methods=["POST"])  
+def postCharacter():
+     try:
+        datos = request.get_json()
+        character = Character()
+        character.name =datos['name']
+        character.url = datos['url']
+        character.uid = datos['uid']
+        character.save()
+    
+        return jsonify(character.serialize()), 201
+     except Exception as e:
+        
+        return jsonify({"msg":"personaje no fue agregado"}),400
 
 @app.route('/api/updateCharacters/<int:id>', methods=['PUT'])
 def updatecharacter(id):
@@ -152,16 +150,17 @@ def updatecharacter(id):
            
 @app.route('/api/deletCharacters/<int:id>', methods=['DELETE'])
 def deletecharacter(id):
-    # SELECT * FROM users WHERE id = ?
-    character = Character.query.get(id)
+    try:
+        character = Character.query.get(id)
 
-    # DELETE FROM users WHERE id=?
-    character.delete()
+        character.delete()
 
-    return jsonify({ "message": "Character Deleted" }), 202
+        return jsonify({ "message": "personaje Deleted" }), 202
+    except Exception as e:
+        
+        return jsonify({"msg":"personaje no fue agregado"}),400
 
-
- ##Funcion para salvar api de planetas desde la web y almacenar su info en archivo   
+ ##Funcion para salvar api de planetas desde la web y almacenar directo a la BD   
 @app.route('/api/almacenaPlanetas', methods=["GET"])
 def almacenaplanetas():
 
@@ -174,6 +173,8 @@ def almacenaplanetas():
    
     if datos.status_code == 200:
         print("Acceso correcto")
+    else:
+        print("Acceso con problemas")
   
     for planeta in planetas["results"]:
         planet = Planet()
@@ -235,58 +236,58 @@ def deleteplanet(id):
         
         return jsonify({"msg":"planeta no fue Eliminado"}),400
 
-##Funcion para salvar api de vehiculos desde la web y almacenar su info en archivo
+##Funcion para salvar api de vehiculos desde la web y almacenar directo en la BD
 @app.route('/api/almacenaVehiculos', methods=["GET"])
 def almacenavehiculos():
     #print("1")
     url ='https://www.swapi.tech/api/vehicles'
 
     datos = requests.get(url)
-    #lista_people = list()
-    print({"soy data"},datos.status_code)
-    #"print("2")
-
+    
+    vehiculos = datos.json()
+    #print({"soy data"},datos.status_code)
+    #print(vehicles['results'])
+   
     if datos.status_code == 200:
-        content= datos.content
-       # print(content)
-        file = open('vehicles.json','wb')
-        file.write(content)
-        file.close()
-        #print(content)
+        print("Acceso correcto")
     else:
-        print("falla en requests")
-    
-    return("Almacenada api de Vehiculos")  
-    
+        print("Acceso con problemas")
 
-@app.route('/api/postVehicles', methods=["POST"])  
-def postvehicles():
-    #print("1")   
-    url='./vehicles.json'
-    with open(url) as file:
-     data = json.load(file)
-     lista_vehicles=list()
-     #print({"soy data"},data["results"])
-     for vehiculo in data["results"]:
-
+    for vehiculo in vehiculos["results"]:
         vehicle = Vehicle()
-        vehicle.name = vehiculo['name']
+        vehicle.name =vehiculo['name']
         vehicle.url = vehiculo['url']
         vehicle.uid = vehiculo['uid']
-        lista_vehicles.append(vehicle)
-        db.session.add_all(lista_vehicles)
-        db.session.commit()
+        
+        vehicle.save()
+        
         vehicles = Vehicle.query.all()
-        vehicles=list(map(lambda vehicle: vehicle.serialize(), vehicles))
-        file.close()
+        vehicles= list(map(lambda vehicle: vehicle.serialize(), vehicles))
+  
     return jsonify(vehicles), 200
+    
+    
+@app.route('/api/postVehicles', methods=["POST"])  
+def postvehicles():
+    try:
+        datos = request.get_json()
+        vehicle = Vehicle()
+        vehicle.name =datos['name']
+        vehicle.url = datos['url']
+        vehicle.uid = datos['uid']
+        vehicle.save()
+    
+        return jsonify(vehicle.serialize()), 201
+    except Exception as e:
+        
+        return jsonify({"msg":"vehiculo no fue agregado"}),400
 
 @app.route('/api/updateVehicle/<int:id>', methods=['PUT'])
 def updatevehicle(id):
     try:
-        name = request.json.get('name') # None
-        uid = request.json.get('id') # None
-        url =  request.json.get('url') # None
+        name = request.json.get('name') # puede cambiar
+        uid = request.json.get('id') # puede cambiar
+        url =  request.json.get('url') # puede cambiar
     
         vehicle= Vehicle.query.get(id)
         vehicle.name = name
@@ -300,14 +301,16 @@ def updatevehicle(id):
            
 @app.route('/api/deletVehicle/<int:id>', methods=['DELETE'])
 def deletevehicle(id):
-    # SELECT * FROM users WHERE id = ?
-    vehicle = Vehicle.query.get(id)
+   try:
+        vehicle = Vehicle.query.get(id)
 
-    # DELETE FROM users WHERE id=?
-    vehicle.delete()
+        vehicle.delete()
 
-    return jsonify({ "message": "Vehicle Deleted" }), 202
-    
+        return jsonify({ "message": "Vehicle Deleted" }), 202
+   except Exception as e:
+        
+        return jsonify({"msg":"vehicle no fue Eliminado"}),400
+ 
        
 
 #with app.app_context():
