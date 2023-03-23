@@ -12,8 +12,8 @@ class User(db.Model):
     #favoritos=db.relationship('Vehicle',back_populates('vehicle_id'))
 
     
-    def __repr__(self):
-        return f'<User {self.email}>'
+    #def __repr__(self):
+    #    return f'<User {self.email}>'
 
     def serialize(self):
         return {

@@ -29,32 +29,47 @@ def home():
     return render_template('index.html')
 
 ## Ruta de usuario
-#@app.route('/api/getUser', methods=['GET'])
-#def getuser():
-#    try:
-#        users= User.query.all()
-#        list_user=list()
-#        print(users)
-#        for u in users:
-#            list_user.append({"email":u.email,"password": u.password,"is_active":u.is_active})
-#            response_body ={"msg": "Hello, this is your GET /user response "}
-#        return jsonify({"users":list_user}), 200
-#    except Exception as e:
-#        return jsonify({"mensaje":"No existe aun,ningun usuario o ha ocurrido un errror"})
-#    
-#@app.route('/api/createUsers', methods=['POST'])
-#def createusers():
-#    # INSERT INTO users() VALUES ()
-#
-#    datos = request.get_json()
-#    user = User()
-#    user.email = datos['email']
-#    user.password = datos['password']
-#    user.isActive = datos['isActive']
-#    user.save() # ejecuta add + commit
-#
-#
-#    return jsonify(user.serialize()), 201
+@app.route('/api/getUser', methods=['GET'])
+def getuser():
+    #test de getUser exitoso, pendiente Post de user
+    try:
+        users= User.query.all()
+        list_user=list()
+        print(users)
+        for u in users:
+            list_user.append({"email":u.email,"password": u.password,"isActive":u.isActive})
+            response_body ={"msg": "Hello, this is your GET /user response "}
+        return jsonify({"users":list_user}), 200
+    except Exception as e:
+        return jsonify({"mensaje":"No existe aun,ningun usuario "})
+
+#  Se mantiene pendiente validacion de POST en user
+# # Recursos planet-personajes-vehicles ok con CRUD  
+@app.route('/api/createUsers', methods=['POST'])
+def createusers():
+    # INSERT INTO users() VALUES ()
+    email = request.json.get('email') # None
+    password = request.json.get('password') # None
+    isActive =  request.json.get('isActive') # None
+    
+    #Pruebas con registro de uauario
+    #datos = request.get_json()
+    #print(datos)
+    user= User()
+    user = User.query.filter_by(email=email).first()
+    if user: return jsonify({"msg": "Email esta en uso"}),400
+    if not user:
+       
+        user.email = email
+        user.password = password
+        user.isActive = isActive
+        user.save() # ejecuta add + commit
+
+        return jsonify({"msg": "Usuario no se encuentra, creado el usuario"}), 201
+        
+        
+
+    #return jsonify({"msg": "Usuario registrado"}), 201
 #
 #@app.route('/api/updateUsers/<int:id>', methods=['PATCH'])
 #def update_user(id):
