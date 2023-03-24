@@ -16,6 +16,7 @@ app.url_map.slashes=False
 app.config['DEBUG']=True
 app.config['ENV']='development'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
+app.config['SECRET_KEY'] ="cualquier_palabra"
 app.config['SQLALCHEMY_DATABASE_URI']=os.getenv('DATABASE_URI')
 
 db.init_app(app)
@@ -29,79 +30,72 @@ def home():
     return render_template('index.html')
 
 ## Ruta de usuario
-@app.route('/api/getUser', methods=['GET'])
+@app.route('/api/users', methods=['GET'])
 def getuser():
-    #test de getUser exitoso, pendiente Post de user
     try:
-        users= User.query.all()
-        list_user=list()
-        print(users)
-        for u in users:
-            list_user.append({"email":u.email,"password": u.password,"isActive":u.isActive})
-            response_body ={"msg": "Hello, this is your GET /user response "}
-        return jsonify({"users":list_user}), 200
+        users = User.query.all()
+        users = list(map(lambda user: user.serialize(),users))
+        print({"es iterable users desde GET?"},dir(users))
+        return jsonify(users),200
     except Exception as e:
-        return jsonify({"mensaje":"No existe aun,ningun usuario "})
+        return jsonify({"msg": "No existe aun ningun usuario"})
+    #test de getUser exitoso, pendiente Post de user
 
-#  Se mantiene pendiente validacion de POST en user
-# # Recursos planet-personajes-vehicles ok con CRUD  
-@app.route('/api/createUsers', methods=['POST'])
-def createusers():
-    # INSERT INTO users() VALUES ()
-    email = request.json.get('email') # None
-    password = request.json.get('password') # None
-    isActive =  request.json.get('isActive') # None
+@app.route('/api/users', methods=['POST'])
+def create_user():
+    try:
+        datos = request.get_json()
+        user = User()
+        user.name = datos['name']
+        user.lastname = datos['lastname']
+        user.email = datos['email']
+        user.password = datos['password']
+        user.save() # ejecuta add + commit
+        print({"es iterable users desde POST?"},dir(users))
+        return jsonify(user.serialize()), 201
+    except Exception as e:
+
+        return jsonify({"No se pudo agregar User"}), 400
     
-    #Pruebas con registro de uauario
-    #datos = request.get_json()
-    #print(datos)
-    user= User()
-    user = User.query.filter_by(email=email).first()
-    if user: return jsonify({"msg": "Email esta en uso"}),400
-    if not user:
-       
+##  Se mantiene pendiente validacion de POST en user
+# # Recursos planet-personajes-vehicles ok con CRUD  
+
+@app.route('/api/updateUsers/<int:id>', methods=['PUT'])
+def update_user(id):
+    # UPDATE user SET name="", lastname="" email="", password="" WHERE id = ?
+    try:
+        email =  request.json.get('email') # None
+        password =  request.json.get('password') # None
+        isActive = request.json.get('isActive') # None
+        # SELECT * FROM users WHERE id = ?
+        user = User.query.get(id)
         user.email = email
         user.password = password
         user.isActive = isActive
-        user.save() # ejecuta add + commit
+        user.update()
+        print({"es iterable users desde PUT?"},dir(users))
+        return jsonify(user.serialize()), 202
+    except Exception as e:
+    #db.session.commit()
 
-        return jsonify({"msg": "Usuario no se encuentra, creado el usuario"}), 201
-        
-        
+        return jsonify({"No se logro actualizar el cambio"}), 400
 
-    #return jsonify({"msg": "Usuario registrado"}), 201
+@app.route('/api/deletUsers/<int:id>', methods=['DELETE'])
+def delete_user(id):
+    # SELECT * FROM users WHERE id = ?
+    try:
+        user = User.query.get(id)
+
+        user.delete()
+        print({"es iterable users desde DELETE?"},dir(users))
+        return jsonify({ "message": "User Deleted" }), 202
+    except Exception as e:
+
+        return jsonify({ "message": "No se logro eliminar a usuario" }), 400
 #
-#@app.route('/api/updateUsers/<int:id>', methods=['PATCH'])
-#def update_user(id):
-#    # UPDATE user SET name="", lastname="" email="", password="" WHERE id = ?
-#    
-#    email =  request.json.get('email') # None
-#    password =  request.json.get('password') # None
-#    isActive = request.json.get('isActive') # None
-#    # SELECT * FROM users WHERE id = ?
-#    user = User.query.get(id)
-#    user.email = email
-#    user.password = password
-#    user.isActive = isActive
-#    user.update()
-#    
-#    #db.session.commit()
-#
-#    return jsonify(user.serialize()), 202
-#
-#@app.route('/api/deletUsers/<int:id>', methods=['DELETE'])
-#def delete_user(id):
-#    # SELECT * FROM users WHERE id = ?
-#    user = User.query.get(id)
-#
-#    # DELETE FROM users WHERE id=?
-#    user.delete()
-#
-#    return jsonify({ "message": "User Deleted" }), 202
-#
-#
-#
-###Funcion para salvar api de personajes desde la web y almacenar su info en archivo
+##
+##
+####Funcion para salvar api de personajes desde la web y almacenar su info directo a la BD
 @app.route('/api/almacenaPersonaje', methods=["GET"])
 def almacenaPersonaje():
     #print("1")
@@ -325,7 +319,7 @@ def deletevehicle(id):
    except Exception as e:
         
         return jsonify({"msg":"vehicle no fue Eliminado"}),400
- 
+
        
 
 #with app.app_context():
