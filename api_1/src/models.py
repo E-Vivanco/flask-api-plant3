@@ -8,10 +8,10 @@ class User(db.Model):
     lastname = db.Column(db.String(100),unique=False,nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    #isActive = db.Column(db.Boolean(), unique=False, nullable=False)
-    #favoritos=db.relationship('Planet', back_populates('planet_id'))
-    #favoritos=db.relationship('Character',back_populates('character_id'))
-    #favoritos=db.relationship('Vehicle',back_populates('vehicle_id'))
+    ##isActive = db.Column(db.Boolean(), unique=False, nullable=False)
+   # favoritos=db.relationship('Planet', secondary=favoritosplanetas,backref=db.backref('users',lazy=True))
+    #favoritos=db.relationship('Character',secondary=favoritospersonajes,backref=db.backref('users',lazy=True))
+    #favoritos=db.relationship('Vehicle',secondary=favoritosvehiculos,backref=db.backref('users',lazy=True))
 
     
     #def __repr__(self):
@@ -23,7 +23,7 @@ class User(db.Model):
             "name":self.name,
             "lastname": self.lastname,
             "email": self.email,
-            "password":self.password
+            #"password":self.password
             #"isActive": self.isActive
             # do not serialize the password, its a security breach
         }
@@ -110,24 +110,28 @@ class Vehicle(db.Model):
     def update(self):
         db.session.commit()
 
-#class Favorito(db.Model):
-#    __tablename__ = 'favoritos'
-#    #id = db.Column(db.Integer, primary_key=True)
-#    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-#    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
-#    planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
-#    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id'))
+class Favorito(db.Model):
+    __tablename__ = 'favoritos'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    character_id = db.Column(db.Integer, db.ForeignKey('character.id'))
+    planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'))
+    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicle.id'))
 #
-#class FavoritosVehicles(db.Model)
-#    __tablaname__='favoritosvehiculos'
-#
-#class FavoritosPersonajes(db.Model)
-#    __tablaname__='favoritospersonajes'
-#
-#class FavoritosPlanetas(db.Model)
-#    __tablaname__='favoritosplanetas'
-#
-#class FavoritosVehiculos(db.Model)
-#    __tablaname__='favoritosvehiculos'
 
+#class FavoritosPlanetas(db.Model):
+#    __tablaname__='favoritosplanetas'
+#    db.Column('user_id',db.Integer,db.ForeignKey('user.id'), primary_key=True),
+#    db.Column('planet_id',db.Integer,db.ForeignKey('planet.id'), primary_key=True)
+#
+#class FavoritosPersonajes(db.Model):
+#    __tablaname__='favoritospersonajes'
+#    db.Column('user_id',db.Integer,db.ForeignKey('user.id'), primary_key=True),
+#    db.Column('character_id',db.Integer,db.ForeignKey('character.id'), primary_key=True)
+##
+#class FavoritosVehiculos(db.Model):
+#    __tablaname__='favoritosvehiculos'
+#    db.Column('user_id',db.Integer,db.ForeignKey('user.id'), primary_key=True),
+#    db.Column('vehicle_id',db.Integer,db.ForeignKey('vehicle.id'), primary_key=True)
+#
 

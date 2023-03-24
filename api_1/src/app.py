@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, url_for, session,render_template
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db, User,Character,Planet,Vehicle
+from models import db , User,Character,Planet,Vehicle, Favorito
 import requests
 import json
 from flask_sqlalchemy import SQLAlchemy
@@ -44,12 +44,17 @@ def getuser():
 @app.route('/api/users', methods=['POST'])
 def create_user():
     try:
-        datos = request.get_json()
+        name = request.json.get('name')
+        lastname = request.json.get('lastname')
+        email = request.json.get('email')
+        password = request.json.get('pasword')
+
+        #datos = request.get_json()
         user = User()
-        user.name = datos['name']
-        user.lastname = datos['lastname']
-        user.email = datos['email']
-        user.password = datos['password']
+        user.name = name
+        user.lastname = lastname
+        user.email = email
+        user.password = password
         user.save() # ejecuta add + commit
         print({"es iterable users desde POST?"},dir(users))
         return jsonify(user.serialize()), 201
