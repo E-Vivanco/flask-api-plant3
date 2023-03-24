@@ -113,6 +113,10 @@ class Favorito(db.Model):
     __tablename__ = 'favoritos'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100),nullable=False)
+    users = db.relationship('User',cascade="all,delete",secondary="favoritosall")
+    planets = db.relationship('Planet',cascade="all,delete",secondary="favoritosall")
+    character = db.relationship('Character',cascade="all,delete",secondary="favoritosall")
+    vehicles = db.relationship('Vehicle',cascade="all,delete",secondary="favoritosall")
 
     def serialize(self):
         return{
@@ -131,14 +135,17 @@ class Favorito(db.Model):
     def update(self):
         db.session.commit()
         
+    def get_favoritos(self):
+        return list(map(lambda favorito: favorito.serialize(),self.favoritos))
+
 
 class Favoritosall(db.Model):
      __tablename__='favoritosall'
      favorito_id= db.Column(db.Integer,db.ForeignKey('favoritos.id',ondelete='CASCADE'),primary_key=True)
      user_id = db.Column(db.Integer, db.ForeignKey('users.id',ondelete='CASCADE'),primary_key=True)
-     character_id = db.Column(db.Integer, db.ForeignKey('character.id',ondelete='CASCADE'),primary_key=True)
-     planet_id = db.Column(db.Integer, db.ForeignKey('planets.id',ondelete='CASCADE'),primary_key=True)
-     vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id',ondelete='CASCADE'),primary_key=True)
+     character_id = db.Column(db.Integer, db.ForeignKey('users.id',ondelete='CASCADE'),primary_key=True)
+     planet_id = db.Column(db.Integer, db.ForeignKey('users.id',ondelete='CASCADE'),primary_key=True)
+     vehicle_id = db.Column(db.Integer, db.ForeignKey('users.id',ondelete='CASCADE'),primary_key=True)
 #
 
 #class FavoritosPlanetas(db.Model):

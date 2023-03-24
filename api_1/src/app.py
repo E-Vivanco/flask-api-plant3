@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, url_for, session,render_template
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db #, User,Character,Planet,Vehicle, Favorito
+from models import db , User,Character,Planet,Vehicle, Favorito
 import requests
 import json
 from flask_sqlalchemy import SQLAlchemy

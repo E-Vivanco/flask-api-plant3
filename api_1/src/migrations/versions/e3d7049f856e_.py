@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 4125013253cb
+Revision ID: e3d7049f856e
 Revises: 
-Create Date: 2023-03-24 23:00:04.427231
+Create Date: 2023-03-24 23:37:59.293850
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4125013253cb'
+revision = 'e3d7049f856e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -59,11 +59,11 @@ def upgrade():
     sa.Column('character_id', sa.Integer(), nullable=False),
     sa.Column('planet_id', sa.Integer(), nullable=False),
     sa.Column('vehicle_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['character_id'], ['character.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['character_id'], ['users.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['favorito_id'], ['favoritos.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['planet_id'], ['planets.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['planet_id'], ['users.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['vehicle_id'], ['vehicles.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['vehicle_id'], ['users.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('favorito_id', 'user_id', 'character_id', 'planet_id', 'vehicle_id')
     )
     # ### end Alembic commands ###
