@@ -2,16 +2,15 @@ from flask_sqlalchemy import SQLAlchemy
 db= SQLAlchemy()
 
 class User(db.Model):
-    __tablaname__='users'
+    __tablename__='users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100),unique=False,nullable=False)
     lastname = db.Column(db.String(100),unique=False,nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    ##isActive = db.Column(db.Boolean(), unique=False, nullable=False)
-   # favoritos=db.relationship('Planet', secondary=favoritosplanetas,backref=db.backref('users',lazy=True))
-    #favoritos=db.relationship('Character',secondary=favoritospersonajes,backref=db.backref('users',lazy=True))
-    #favoritos=db.relationship('Vehicle',secondary=favoritosvehiculos,backref=db.backref('users',lazy=True))
+    favoritos=db.relationship('Favorito',cascade="all,delete",secondary="favoritosall",back_populates="users")
+    #favoritos=db.relationship('Character',secondary=favoritosall,backref=db.backref('users',lazy=True))
+    #favoritos=db.relationship('Vehicle',secondary=favoritosall,backref=db.backref('users',lazy=True))
 
     
     #def __repr__(self):
@@ -39,7 +38,7 @@ class User(db.Model):
         db.session.commit()
 
 class Character(db.Model):
-    __tablaname__='character'
+    __tablename__='character'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=False, nullable=False)
     url = db.Column(db.String(100), unique=False, nullable=False)
@@ -64,7 +63,7 @@ class Character(db.Model):
         db.session.commit()
 
 class Planet(db.Model):
-    __tablaname__='planets'
+    __tablename__='planets'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=False, nullable=False)
     url = db.Column(db.String(100), unique=False, nullable=False)
@@ -88,7 +87,7 @@ class Planet(db.Model):
         db.session.commit()
 
 class Vehicle(db.Model):
-    __tablaname__='vehicles'
+    __tablename__='vehicles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=False, nullable=False)
     url = db.Column(db.String(100), unique=False, nullable=False)
@@ -113,10 +112,33 @@ class Vehicle(db.Model):
 class Favorito(db.Model):
     __tablename__ = 'favoritos'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    character_id = db.Column(db.Integer, db.ForeignKey('character.id'))
-    planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'))
-    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicle.id'))
+    name = db.Column(db.String(100),nullable=False)
+
+    def serialize(self):
+        return{
+            "id":self.id,
+            "name":self.name
+        }
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+        
+
+class Favoritosall(db.Model):
+     __tablename__='favoritosall'
+     favorito_id= db.Column(db.Integer,db.ForeignKey('favoritos.id',ondelete='CASCADE'),primary_key=True)
+     user_id = db.Column(db.Integer, db.ForeignKey('users.id',ondelete='CASCADE'),primary_key=True)
+     character_id = db.Column(db.Integer, db.ForeignKey('character.id',ondelete='CASCADE'),primary_key=True)
+     planet_id = db.Column(db.Integer, db.ForeignKey('planets.id',ondelete='CASCADE'),primary_key=True)
+     vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicles.id',ondelete='CASCADE'),primary_key=True)
 #
 
 #class FavoritosPlanetas(db.Model):
