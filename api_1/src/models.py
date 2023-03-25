@@ -2,16 +2,16 @@ from flask_sqlalchemy import SQLAlchemy
 db= SQLAlchemy()
 
 favoritosplanetas = db.Table('favoritosplanetas',
-    db.Column('planet_id',db.Integer,db.ForeignKey('planet.id'), primary_key=True),
-    db.Column('user_id',db.Integer,db.ForeignKey('user.id'), primary_key=True)
+    db.Column('planet_id',db.Integer,db.ForeignKey('planets.id'), primary_key=True),
+    db.Column('user_id',db.Integer,db.ForeignKey('users.id'), primary_key=True)
 )
 favoritospersonajes = db.Table('favoritospersonajes',
     db.Column('character_id',db.Integer,db.ForeignKey('character.id'), primary_key=True),
-    db.Column('user_id',db.Integer,db.ForeignKey('user.id'), primary_key=True)
+    db.Column('user_id',db.Integer,db.ForeignKey('users.id'), primary_key=True)
 )
 favoritosvehiculos = db.Table('favoritosvehiculos',
-    db.Column('vehicle_id',db.Integer,db.ForeignKey('vehicle.id'), primary_key=True),
-    db.Column('user_id',db.Integer,db.ForeignKey('user.id'), primary_key=True)   
+    db.Column('vehicle_id',db.Integer,db.ForeignKey('vehicles.id'), primary_key=True),
+    db.Column('user_id',db.Integer,db.ForeignKey('users.id'), primary_key=True)   
 )
 
 class User(db.Model):
@@ -21,9 +21,9 @@ class User(db.Model):
     lastname = db.Column(db.String(100),unique=False,nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    favoritosplanetas = db.relationship('Planet',secondary= favoritosplanetas,lazy='subquery',backref=db.bacref('users',lazy=True))
-    favoritospersonajes = db.relationship('Character',secondary= favoritospersonajes,lazy='subquery',backref=db.bacref('users',lazy=True))
-    favoritosvehiculos = db.relationship('Vehicle',secondary= favoritosvehiculos,lazy='subquery',backref=db.bacref('users',lazy=True))
+    favoritosplanetas = db.relationship('Planet',secondary= favoritosplanetas,lazy='subquery',backref=db.backref('users',lazy=True))
+    favoritospersonajes = db.relationship('Character',secondary= favoritospersonajes,lazy='subquery',backref=db.backref('users',lazy=True))
+    favoritosvehiculos = db.relationship('Vehicle',secondary= favoritosvehiculos,lazy='subquery',backref=db.backref('users',lazy=True))
  
     def serialize(self):
         return {
