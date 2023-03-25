@@ -2,10 +2,12 @@ import os
 from flask import Flask, request, jsonify, url_for, session,render_template
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db , User,Character,Planet,Vehicle, Favorito
+from models import db #, User,Character,Planet,Vehicle #, favoritosplanetas, favoritospersonajes, favoritosvehiculos
 import requests
 import json
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import DeclarativeBase, relationship
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -47,20 +49,26 @@ def home():
 #        name = request.json.get('name')
 #        lastname = request.json.get('lastname')
 #        email = request.json.get('email')
-#        password = request.json.get('pasword')
-#
+#        password = request.json.get('password')
+#        peticion = request.get_json()
+#        #print(peticion)
 #        #datos = request.get_json()
 #        user = User()
 #        user.name = name
 #        user.lastname = lastname
 #        user.email = email
 #        user.password = password
+#        print(user)
+#      #  db.session.add(user)
+#      #  db.session.commit()
 #        user.save() # ejecuta add + commit
-#        print({"es iterable users desde POST?"},dir(users))
+#       # user.get_users()
+#
+#       # print({"es iterable users desde POST?"},dir(users))
 #        return jsonify(user.serialize()), 201
 #    except Exception as e:
-#
-#        return jsonify({"No se pudo agregar User"}), 400
+#        print(e)
+#        return jsonify({"msg":"No se pudo agregar User"}), 400
 #    
 ###  Se mantiene pendiente validacion de POST en user
 ## # Recursos planet-personajes-vehicles ok con CRUD  
@@ -327,8 +335,8 @@ def home():
 #
 #       
 #
-##with app.app_context():
-# #   db.create_all()
-#
+#with app.app_context():
+ #   db.create_all()
+
 if __name__ == '__main__':
     app.run()
