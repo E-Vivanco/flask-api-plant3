@@ -43,14 +43,17 @@ def getuser():
         return jsonify({"msg": "No existe aun ningun usuario"})
     #test de getUser exitoso, pendiente Post de user
 
-@app.route('/api/users', methods=['POST'])
+@app.route('/api/userspost', methods= ['POST'])
 def create_user():
     try:
         name = request.json.get('name')
         lastname = request.json.get('lastname')
         email = request.json.get('email')
         password = request.json.get('password')
-        peticion = request.get_json()
+        #favoritosplanetas = request.json.get('favoritosplanetas')
+        #favoritospersonajes = request.json.get('favoritospersonajes')
+        #favoritosvehiculos = request.json.get('favoritosvehiculos')
+       # peticion = request.get_json()
         #print(peticion)
         #datos = request.get_json()
         user = User()
@@ -58,14 +61,18 @@ def create_user():
         user.lastname = lastname
         user.email = email
         user.password = password
-        print(user)
+       # user.favoritosplanetas= favoritosplanetas
+       # user.favoritospersonajes= favoritospersonajes
+       # user.favoritosvehiculos= favoritosvehiculos
+       ## print(user)
       #  db.session.add(user)
       #  db.session.commit()
         user.save() # ejecuta add + commit
        # user.get_users()
 
        # print({"es iterable users desde POST?"},dir(users))
-        return jsonify(user.serialize()), 201
+       # return jsonify(user.serialize()), 201
+        return render_template('crea_user.html',user=user)
     except Exception as e:
         print(e)
         return jsonify({"msg":"No se pudo agregar User"}), 400
@@ -110,6 +117,7 @@ def delete_user(id):
 #
 ##
 ##
+
 ####Funcion para salvar api de personajes desde la web y almacenar su info directo a la BD
 @app.route('/api/almacenaPersonaje', methods=["GET"])
 def almacenaPersonaje():
@@ -226,7 +234,7 @@ def getPlanet():
     try:
         planets = Planet.query.all()
         planets= list(map(lambda planet: planet.serialize(), planets))
-    
+        
         return jsonify(planets), 200
     except Exception as e:
         return jsonify({"msg":"Falla en la carga de planetas"})    
@@ -276,6 +284,20 @@ def deleteplanet(id):
     except Exception as e:
         
         return jsonify({"msg":"planeta no fue Eliminado"}),400
+
+## rutas para CRUD de planetas favoritos        
+@app.route('/api/favoritosplanetas', methods=['GET'])
+def get_favoritosplanetas():
+    try:
+        planetasFvs = favoritosplanetas.query.all()
+        planetasFvs = list(map(lambda planetasFv: planetasFv.serialize(),planetasFvs))
+        
+        return jsonify(planetasFvs.serialize()), 200
+    except Exception as e:
+        return jsonify({"msg":"No tienes planetas favoritos"})
+
+
+
 
 ##Funcion para salvar api de vehiculos desde la web y almacenar directo en la BD
 @app.route('/api/almacenaVehiculos', methods=["GET"])

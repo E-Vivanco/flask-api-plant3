@@ -1,22 +1,11 @@
-"association_table = Table(
-    "association_table",
-    Base.metadata,
-    Column("left_id", ForeignKey("left_table.id"), primary_key=True),
-    Column("right_id", ForeignKey("right_table.id"), primary_key=True),
+tags = db.Table('tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+    db.Column('page_id', db.Integer, db.ForeignKey('page.id'), primary_key=True)
 )
 
+class Page(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tags = db.relationship('Tag', secondary=tags, lazy='subquery',backref=db.backref('pages', lazy=True))
 
-class Parent(Base):
-    __tablename__ = "left_table"
-    id = Column(Integer, primary_key=True)
-    children = relationship(
-        "Child", secondary=association_table, back_populates="parents"
-    )
-
-
-class Child(Base):
-    __tablename__ = "right_table"
-    id = Column(Integer, primary_key=True)
-    parents = relationship(
-        "Parent", secondary=association_table, back_populates="children"
-    )"
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)

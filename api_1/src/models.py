@@ -35,10 +35,31 @@ class User(db.Model):
             "favoritosplanetas":self.favoritosplanetas,
             "favoritospersonajes":self.favoritospersonajes,
             "favoritosvehiculos":self.favoritosvehiculos
+            #"isActive": self.isActive
+            # do not serialize the password, its a security breach
+        }
+    def serialize_favoritos_user(self):
+        return {
+            "id": self.id,
+            "name":self.user.name + " " + self.user.lastname,
+            "favoritosplanetas":self.favoritosplanetas,
+            "favoritospersonajes":self.favoritospersonajes,
+            "favoritosvehiculos":self.favoritosvehiculos
             
             #"isActive": self.isActive
             # do not serialize the password, its a security breach
         }
+
+   # def get_favoritosplanetas(self):
+   #     return list(map(lambda planetasfv: planetasfv.serialize(), self.favoritosplanetas))
+#
+   # def get_favoritospersonajes(self):
+   #     return list(map(lambda personajesfv: personajesfv.serialize(), self.favoritospersonajes))
+#
+   # def get_favoritosvehiculos(self):
+   #     return list(map(lambda vehiculosfv: vehiculosfv.serialize(), self.favoritosvehiculos))
+  
+
     def save(self):
         db.session.add(self)
         db.session.commit()
