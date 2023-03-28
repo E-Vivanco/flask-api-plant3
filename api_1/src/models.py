@@ -24,7 +24,11 @@ class User(db.Model):
     favoritosplanetas = db.relationship('Planet',secondary= favoritosplanetas,lazy='subquery',backref=db.backref('users',lazy=True))
     favoritospersonajes = db.relationship('Character',secondary= favoritospersonajes,lazy='subquery',backref=db.backref('users',lazy=True))
     favoritosvehiculos = db.relationship('Vehicle',secondary= favoritosvehiculos,lazy='subquery',backref=db.backref('users',lazy=True))
+    #favoritosplanetas = db.relationship('Planet',secondary= favoritosplanetas,lazy='subquery',backref=db.backref('users',lazy=True))
+    #favoritospersonajes = db.relationship('Character',secondary= favoritospersonajes,lazy='subquery',backref=db.backref('users',lazy=True))
+    #favoritosvehiculos = db.relationship('Vehicle',secondary= favoritosvehiculos,lazy='subquery',backref=db.backref('users',lazy=True))
  
+
     def serialize(self):
         return {
             "id": self.id,
@@ -38,26 +42,26 @@ class User(db.Model):
             #"isActive": self.isActive
             # do not serialize the password, its a security breach
         }
-    def serialize_favoritos_user(self):
-        return {
-            "id": self.id,
-            "name":self.user.name + " " + self.user.lastname,
-            "favoritosplanetas":self.favoritosplanetas,
-            "favoritospersonajes":self.favoritospersonajes,
-            "favoritosvehiculos":self.favoritosvehiculos
+   # def serialize_favoritos_user(self):
+   #     return {
+   #         "id": self.id,
+   #         "name":self.user.name,
+   #         "favoritosplanetas":self.favoritosplanetas,
+   #         "favoritospersonajes":self.favoritospersonajes,
+   #         "favoritosvehiculos":self.favoritosvehiculos
             
             #"isActive": self.isActive
             # do not serialize the password, its a security breach
-        }
+    #    }
 
-   # def get_favoritosplanetas(self):
-   #     return list(map(lambda planetasfv: planetasfv.serialize(), self.favoritosplanetas))
+    def get_favoritosplanetas(self):
+       return list(map(lambda planetasfv: planetasfv.serialize(), self.favoritosplanetas))
 #
-   # def get_favoritospersonajes(self):
-   #     return list(map(lambda personajesfv: personajesfv.serialize(), self.favoritospersonajes))
+    def get_favoritospersonajes(self):
+        return list(map(lambda personajesfv: personajesfv.serialize(), self.favoritospersonajes))
 #
-   # def get_favoritosvehiculos(self):
-   #     return list(map(lambda vehiculosfv: vehiculosfv.serialize(), self.favoritosvehiculos))
+    def get_favoritosvehiculos(self):
+        return list(map(lambda vehiculosfv: vehiculosfv.serialize(), self.favoritosvehiculos))
   
 
     def save(self):

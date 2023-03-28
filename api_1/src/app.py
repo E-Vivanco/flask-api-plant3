@@ -35,17 +35,20 @@ def home():
 @app.route('/api/users', methods=['GET'])
 def getuser():
     try:
+        print("uno")
         users = User.query.all()
-        users = list(map(lambda user: user.serialize(),users))
+        print(jsonify(users.serialize()))
+        users = list(map(lambda user: user,users))
       #  print({"es iterable users desde GET?"},dir(users))
-        return jsonify(users), 200
+        print({"info:"},users.serialize())
+        return jsonify(users.serialize()), 200
     except Exception as e:
         return jsonify({"msg": "No existe aun ningun usuario"})
     #test de getUser exitoso, pendiente Post de user
 
 @app.route('/api/userspost', methods= ['POST'])
 def create_user():
-   # try:
+    try:
         name = request.json.get('name')
         lastname = request.json.get('lastname')
         email = request.json.get('email')
@@ -71,11 +74,12 @@ def create_user():
        # user.get_users()
 
        # print({"es iterable users desde POST?"},dir(users))
-        return jsonify(user.serialize_favoritos_user()), 201
+        print(users.serialize())
+        return jsonify(user.serialize()), 201
        # return render_template('crea_user.html',user=user)
-    #except Exception as e:
+    except Exception as e:
     #    print(e)
-    #    return jsonify({"msg":"No se pudo agregar User"}), 400
+        return jsonify({"msg":"No se pudo agregar User"}), 400
     
 ##  Se mantiene pendiente validacion de POST en user
 # # Recursos planet-personajes-vehicles ok con CRUD  
@@ -96,6 +100,7 @@ def update_user(id):
         user.lastname = lastname
         user.update()
        # print({"es iterable users desde PUT?"},dir(users))
+        print(users.serialize())
         return jsonify(user.serialize()), 202
     except Exception as e:
     #db.session.commit()
@@ -117,6 +122,18 @@ def delete_user(id):
 #
 ##
 ##
+@app.route('/api/planetafavorito',methods=['GET'])
+def planetafavorito():
+    return get_favoritosplanetas()
+
+@app.route('/api/personajefavorito',methods=['GET'])
+def personajefavorito():
+    return get_favoritospersonajes()
+
+@app.route('/api/vehiculofavorito',methods=['GET'])
+def vehiculofavorito():
+    return get_favoritosvehiculos()
+
 
 ####Funcion para salvar api de personajes desde la web y almacenar su info directo a la BD
 @app.route('/api/almacenaPersonaje', methods=["GET"])
@@ -199,6 +216,18 @@ def deletecharacter(id):
     except Exception as e:
         
         return jsonify({"msg":"personaje no fue agregado"}),400
+
+@app.route('/api/favoritospersonajes', methods=['GET'])
+def get_favoritospersonajes():
+    try:
+        personajesFvs = favoritospersonajes.query.all()
+        personajesFvs = list(map(lambda personajesFv: personajesFv.serialize(),personajesFvs))
+        
+        return jsonify(personajesFvs), 200
+    except Exception as e:
+        return jsonify({"msg":"No tienes personajes favoritos"})
+
+
 
  ##Funcion para salvar api de planetas desde la web y almacenar directo a la BD   
 @app.route('/api/almacenaPlanetas', methods=["GET"])
@@ -292,7 +321,7 @@ def get_favoritosplanetas():
         planetasFvs = favoritosplanetas.query.all()
         planetasFvs = list(map(lambda planetasFv: planetasFv.serialize(),planetasFvs))
         
-        return jsonify(planetasFvs.serialize()), 200
+        return jsonify(planetasFvs), 200
     except Exception as e:
         return jsonify({"msg":"No tienes planetas favoritos"})
 
@@ -384,9 +413,21 @@ def deletevehicle(id):
         
         return jsonify({"msg":"vehicle no fue Eliminado"}),400
 
+## rutas para CRUD de vehiculos favoritos        
+@app.route('/api/favoritovehiculo', methods=['GET'])
+def get_favoritosvehiculos():
+    try:
+        vehiculosFvs = favoritosvehiculos.query.all()
+        vehiculosFvs = list(map(lambda vehiculosFv: vehiculosFv.serialize(),vehiculosFvs))
+        
+        return jsonify(vehiculosFvs), 200
+    except Exception as e:
+        return jsonify({"msg":"No tienes vehiculos favoritos"})
+
+
        
 
-#with app.app_context():
-   db.create_all()
+with app.app_context():
+    db.create_all()
 if __name__ == '__main__':
     app.run()
