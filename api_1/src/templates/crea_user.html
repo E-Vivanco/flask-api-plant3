@@ -14,7 +14,7 @@
 </head>
 <body>
 	<div class="container-fluid w-100 my-3 justify-content-center align-items-center">
-    	<form action="/api/userspost" method="post">
+    	<form action="" >
         <div class="container">
          <div class="row">
                     <div class="col-3 auto">
@@ -42,15 +42,15 @@
             	
 		<div class="col-4 auto">
                     <label for="name"></label>
-                    <input name= "planeta" type="text" class="form-control" id="planeta" placeholder="Planet" required="required"/>
+                    <input name= "favoritosplanetas" type="text" class="form-control" id="planeta" placeholder="Planet"/>
                     </div>
 		<div class="col-4 auto">
                     <label for="name"></label>
-                    <input name= "personaje" type="text" class="form-control" id="personaje" placeholder="Personaje" required="required"/>
+                    <input name= "favoritospersonajes" type="text" class="form-control" id="personaje" placeholder="Personaje"/>
                     </div>
 		<div class="col-4 auto">
                     <label for="name"></label>
-                    <input name= "vehiculo" type="text" class="form-control" id="vehiculo" placeholder="vehiculo" required="required"/>
+                    <input name= "favoritosvehiculos" type="text" class="form-control" id="vehiculo" placeholder="vehiculo"/>
                     </div>
 		
             
@@ -58,10 +58,10 @@
 	
         </div>
 	
-        
+        <button class="btn btn-info mx-5 my-2">Enviar</button>
     </form>
 
-<button class="btn btn-info mx-5 my-2">Enviar</button>
+
 </div>
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 

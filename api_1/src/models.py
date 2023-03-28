@@ -20,7 +20,7 @@ class User(db.Model):
     name = db.Column(db.String(100),unique=False,nullable=False)
     lastname = db.Column(db.String(100),unique=False,nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
+    password = db.Column(db.String(80), unique=False, nullable=False)    
     favoritosplanetas = db.relationship('Planet',secondary= favoritosplanetas,lazy='subquery',backref=db.backref('users',lazy=True))
     favoritospersonajes = db.relationship('Character',secondary= favoritospersonajes,lazy='subquery',backref=db.backref('users',lazy=True))
     favoritosvehiculos = db.relationship('Vehicle',secondary= favoritosvehiculos,lazy='subquery',backref=db.backref('users',lazy=True))

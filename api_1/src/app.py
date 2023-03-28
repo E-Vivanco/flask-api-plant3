@@ -38,14 +38,14 @@ def getuser():
         users = User.query.all()
         users = list(map(lambda user: user.serialize(),users))
       #  print({"es iterable users desde GET?"},dir(users))
-        return jsonify(users),200
+        return jsonify(users), 200
     except Exception as e:
         return jsonify({"msg": "No existe aun ningun usuario"})
     #test de getUser exitoso, pendiente Post de user
 
 @app.route('/api/userspost', methods= ['POST'])
 def create_user():
-    try:
+   # try:
         name = request.json.get('name')
         lastname = request.json.get('lastname')
         email = request.json.get('email')
@@ -71,11 +71,11 @@ def create_user():
        # user.get_users()
 
        # print({"es iterable users desde POST?"},dir(users))
-       # return jsonify(user.serialize()), 201
-        return render_template('crea_user.html',user=user)
-    except Exception as e:
-        print(e)
-        return jsonify({"msg":"No se pudo agregar User"}), 400
+        return jsonify(user.serialize_favoritos_user()), 201
+       # return render_template('crea_user.html',user=user)
+    #except Exception as e:
+    #    print(e)
+    #    return jsonify({"msg":"No se pudo agregar User"}), 400
     
 ##  Se mantiene pendiente validacion de POST en user
 # # Recursos planet-personajes-vehicles ok con CRUD  
