@@ -37,14 +37,16 @@ def getuser():
     try:
         print("uno")
         users = User.query.all()
-        print(jsonify(users.serialize()))
-        users = list(map(lambda user: user,users))
+        #print(users)
+       # print(jsonify(users.serialize()))
+        users = list(map(lambda user: user.serialize(),users))
+        #print(users)
+      #  users = User.query.filter_by(email = email,isActive=True).first()
       #  print({"es iterable users desde GET?"},dir(users))
-        print({"info:"},users.serialize())
-        return jsonify(users.serialize()), 200
+        #print({"info:"},users.serialize())
+        return jsonify(users), 200
     except Exception as e:
         return jsonify({"msg": "No existe aun ningun usuario"})
-    #test de getUser exitoso, pendiente Post de user
 
 @app.route('/api/userspost', methods= ['POST'])
 def create_user():
@@ -56,8 +58,8 @@ def create_user():
         #favoritosplanetas = request.json.get('favoritosplanetas')
         #favoritospersonajes = request.json.get('favoritospersonajes')
         #favoritosvehiculos = request.json.get('favoritosvehiculos')
-       # peticion = request.get_json()
-        #print(peticion)
+        peticion = request.get_json()
+        print(peticion)
         #datos = request.get_json()
         user = User()
         user.name = name
@@ -74,7 +76,7 @@ def create_user():
        # user.get_users()
 
        # print({"es iterable users desde POST?"},dir(users))
-        print(users.serialize())
+       # print(users.serialize())
         return jsonify(user.serialize()), 201
        # return render_template('crea_user.html',user=user)
     except Exception as e:

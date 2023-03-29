@@ -20,7 +20,8 @@ class User(db.Model):
     name = db.Column(db.String(100),unique=False,nullable=False)
     lastname = db.Column(db.String(100),unique=False,nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)    
+    password = db.Column(db.String(80), unique=False, nullable=False)  
+    isActive = db.Column(db.Boolean(),default=True)  
     favoritosplanetas = db.relationship('Planet',secondary= favoritosplanetas,lazy='subquery',backref=db.backref('users',lazy=True))
     favoritospersonajes = db.relationship('Character',secondary= favoritospersonajes,lazy='subquery',backref=db.backref('users',lazy=True))
     favoritosvehiculos = db.relationship('Vehicle',secondary= favoritosvehiculos,lazy='subquery',backref=db.backref('users',lazy=True))
@@ -30,15 +31,20 @@ class User(db.Model):
  
 
     def serialize(self):
+        #"favoritosplanetas":self.favoritosplanetas,
+        #"favoritospersonajes":self.favoritospersonajes,
+        #"favoritosvehiculos":self.favoritosvehiculos
         return {
             "id": self.id,
             "name":self.name,
             "lastname": self.lastname,
             "email": self.email,
             "password":self.password,
-            "favoritosplanetas":self.favoritosplanetas,
-            "favoritospersonajes":self.favoritospersonajes,
-            "favoritosvehiculos":self.favoritosvehiculos
+            "isActive": self.isActive,
+            "favoritosplanetas":self.get_favoritosplanetas(),
+            "favoritospersonajes":self.get_favoritospersonajes(),
+            "favoritosvehiculos":self.get_favoritosvehiculos()
+            
             #"isActive": self.isActive
             # do not serialize the password, its a security breach
         }
