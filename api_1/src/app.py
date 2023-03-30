@@ -109,6 +109,19 @@ def update_user(id):
 
         return jsonify({"No se logro actualizar el cambio"}), 400
 
+@app.route('/api/users/<int:id>/', methods=['POST'])
+def post_favoritos(id):
+    if favoritosplanetas():
+        planet_id = request.json.get('planet_id')
+        user_id = request.json.get('user_id')
+
+        user= User()
+        user.planet_id = planet_id
+        user.user_id = user_id
+
+        user.save()
+        return jsonify(user.serialize()),201
+
 @app.route('/api/deletUsers/<int:id>', methods=['DELETE'])
 def delete_user(id):
     # SELECT * FROM users WHERE id = ?
@@ -219,6 +232,7 @@ def deletecharacter(id):
         
         return jsonify({"msg":"personaje no fue agregado"}),400
 
+# crud de fovoritos personajes
 @app.route('/api/favoritospersonajes', methods=['GET'])
 def get_favoritospersonajes():
     try:
@@ -229,7 +243,27 @@ def get_favoritospersonajes():
     except Exception as e:
         return jsonify({"msg":"No tienes personajes favoritos"})
 
+@app.route('/api/users/<int:id>/favoritospersonajes',methods=['POST'])
+def post_favoritospersonajes(id):
+        try:
+            favoritospersonajes.user_id= request.json.get('favoritospersonajes.user_id')
+            favoritospersonajes.planet_id= request.json.get('favoritospersonajes.planet_id')
 
+            return # aqui deberia devolver lista de planetas favoritos asociados a un user
+        except Exception as e:
+            return jsonify({"msg":"no se logro agregar un personaje favorito"})
+        
+        #
+@app.route('/api/users/<int:id>/favoritospersonajes',methods=['DELETE'])
+def del_favoritospersonajes(id):
+        try:
+            favoritospersonajes = favoritospersonajes.query.get(id)
+            favoritospersonajes.delete()
+            return jsonify({"msg":"se elimino personajes favoritos"})
+        except Exception as e:
+            return jsonify({"msg":"no se logro eliminar un spersonaje favorito"})
+        
+        #
 
  ##Funcion para salvar api de planetas desde la web y almacenar directo a la BD   
 @app.route('/api/almacenaPlanetas', methods=["GET"])
@@ -327,7 +361,27 @@ def get_favoritosplanetas():
     except Exception as e:
         return jsonify({"msg":"No tienes planetas favoritos"})
 
+@app.route('/api/users/<int:id>/favoritosplanetas',methods=['POST'])
+def post_favoritosplanetas(id):
+        try:
+            favoritosplanetas.user_id= request.json.get('favoritosplanetas.user_id')
+            favoritosplanetas.planet_id= request.json.get('favoritosplanetas.planet_id')
 
+            return # aqui deberia devolver lista de planetas favoritos asociados a un user
+        except Exception as e:
+            return jsonify({"msg":"no se logro agregar un planeta favorito"})
+        
+        #
+@app.route('/api/users/<int:id>/favoritosplanetas',methods=['DELETE'])
+def del_favoritosplanetas(id):
+        try:
+            favoritosplanetas = favoritosplanetas.query.get(id)
+            favoritosplanetas.delete()
+            return jsonify({"msg":"se elimino planetas favoritos"})
+        except Exception as e:
+            return jsonify({"msg":"no se logro eliminar un planeta favorito"})
+        
+        #
 
 
 ##Funcion para salvar api de vehiculos desde la web y almacenar directo en la BD
@@ -426,6 +480,27 @@ def get_favoritosvehiculos():
     except Exception as e:
         return jsonify({"msg":"No tienes vehiculos favoritos"})
 
+@app.route('/api/users/<int:id>/favoritospersonajes',methods=['POST'])
+def post_favoritospersonajes(id):
+        try:
+            favoritospersonajes.user_id= request.json.get('favoritospersonajes.user_id')
+            favoritospersonajes.planet_id= request.json.get('favoritospersonajes.planet_id')
+
+            return # aqui deberia devolver lista de planetas favoritos asociados a un user
+        except Exception as e:
+            return jsonify({"msg":"no se logro agregar un personaje favorito"})
+        
+        #
+@app.route('/api/users/<int:id>/favoritosvehiculos',methods=['DELETE'])
+def del_favoritosvehiculos(id):
+        try:
+            favoritosvehiculos = favoritosvehiculos.query.get(id)
+            favoritosvehiculos.delete()
+            return jsonify({"msg":"se elimino vehiculos favoritos"})
+        except Exception as e:
+            return jsonify({"msg":"no se logro eliminar un vehiculo favorito"})
+        
+        #
 
        
 
